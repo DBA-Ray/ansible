@@ -1,0 +1,30 @@
+- name: Install xfsprogs
+  yum:
+    name: xfsprogs
+    state: latest
+
+- name: Create the new disk partition
+  expect:
+    command: "fdisk {{ fdisk_src }}"
+    responses:
+      (?i)Command (m for help): n
+      (?i)Select: \r
+      (?i)Partition number: \r
+      (?i)First sector: \r
+      (?i)Last sector: \r
+      (?i)Command: w
+    echo: yes
+
+- name: Format the new disk partition
+  shell: "mkfs.xfs -f {{ fstab_src }}"
+
+- name: Remount file path for data directory
+  mount:
+    path: "{{ install_dir }}"
+    src: "{{ fstab_src }}"
+    fstype: xfs
+    opts: defaults,noatime,nobarrier
+    dump: 0
+    passno: 0
+    state: mounted
+#If mounted, the device will be actively mounted and appropriately configured in fstab. If the mount point is not present, the mount point will be created.

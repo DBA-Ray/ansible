@@ -1,0 +1,15 @@
+---
+# defaults file for dba_ray.ansible
+ansible_tower_version: "ansible-tower-setup-3.7.4-1"
+restore_backup_file: "tower-initial.tar.gz"
+install_dir: /data
+package_dir: "{{ install_dir }}/package"
+#packages info
+mysql_version: mysql-8.0.23-el7-x86_64
+proxysql_version: '2.0.18'
+mysql_package_url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_version }}.tar.gz"
+proxysql_package_url: "https://github.com/sysown/proxysql/releases/download/v{{ proxysql_version }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm"
+#disk info
+whether_remount_data_disk: True
+fdisk_src: /dev/vdb
+fstab_src: "{{ fdisk_src }}1"

@@ -1,0 +1,34 @@
+- name: Create directories for packages
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ package_dir }}"
+
+- name: Copy the roles list
+  copy:
+    src: requirements.yml
+    dest: "{{ package_dir }}"
+
+- name: Download the ansible roles
+  shell: "ansible-galaxy install -r {{ package_dir }}/requirements.yml --force"
+  register: result
+  retries: 7
+  until: result is succeeded
+
+- name: Download the packages for the mysql and the proxysql
+  get_url:
+    url: "{{ item }}"
+    dest: "{{ package_dir }}"
+  with_items: 
+    - "{{ mysql_package_url }}"
+    - "{{ proxysql_package_url }}"
+  register: result
+  retries: 7
+  until: result is succeeded
+
+- name: Copy the packages to the ansible roles
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: "{{ package_dir }}/{{ mysql_version }}.tar.gz", dest: '/etc/asible/roles/dba_ray.mysql/files' }
+    - { src: "{{ package_dir }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm", dest: '/etc/asible/roles/dba_ray.proxysql/files' }

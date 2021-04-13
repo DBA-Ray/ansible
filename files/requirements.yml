@@ -1,0 +1,10 @@
+# from galaxy
+- src: dba_ray.haproxy
+- src: dba_ray.keepalived
+- src: dba_ray.proxysql
+- src: dba_ray.mysql
+- src: dba_ray.manage_proxysql
+- src: dba_ray.manage_mysql
+- src: dba_ray.scheduler_job
+- src: dba_ray.mongodb
+- src: dba_ray.ndb_cluster

@@ -1,0 +1,60 @@
+- name: Stop the ansible tower
+  shell: "ansible-tower-service stop"
+  when: whether_uninstall
+
+- name: Wait for ansible tower is stopped
+  pause: seconds=7
+  when: whether_uninstall
+
+- name: Remove the ansible tower
+  yum:
+    name: 'ansible-tower*'
+    state: absent
+  when: whether_uninstall
+
+- name: Remove file (delete file)
+  file:
+    path: "{{ file }}"
+  vars: 
+    file:
+      - '/etc/yum.repos.d/ansible-tower.repo'
+      - '/etc/sysconfig/ansible-tower.rpm*'
+    state: absent
+  when: whether_uninstall
+
+- name: Recursively remove directory
+  file:
+    path: "{{ directory }}"
+  vars: 
+    directory:
+    - '/var/lib/awx'
+    - '/etc/tower'
+    state: absent
+  when: whether_uninstall
+
+- name: Create directories for packages
+  file: path={{ item }} state=directory
+  with_items:
+    - "{{ package_dir }}"
+
+- name: Download the ansible tower package
+  get_url:
+    url: "https://releases.ansible.com/ansible-tower/setup/{{ ansible_tower_version }}.tar.gz"
+    dest: "{{ package_dir }}"
+
+- name: Uncompress the ansible tower package to package dir
+  unarchive:
+    src: "{{ package_dir }}/{{ ansible_tower_version }}.tar.gz"
+    dest: "{{ package_dir }}/"
+    remote_src: yes
+
+- name: Modify the inventory
+  replace:
+    path: "{{ item }}"
+    regexp: 'password='
+    replace: "password=/'{{ admin_password }}/'"
+  with_items:
+    - { "{{ package_dir }}/{{ ansible_tower_version }}" }
+
+- name: Setup the ansible tower
+  shell: "sh -x {{ package_dir }}/{{ ansible_tower_version }}/setup.sh"

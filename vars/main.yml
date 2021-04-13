@@ -1,0 +1,24 @@
+---
+# vars file for dba_ray.ansible
+packages:
+  - vim
+  - wget
+  - lrzsz
+  - telnet
+  - net-tools
+  - tree
+  - unzip
+  - libaio
+  - numactl
+  - perl-DBD-mysql
+  - expect
+  - MySQL-python
+  - zstd
+  - python2-dnf
+  - epel-release
+  - python-pip
+  - python2-pip.noarch
+  - pyhon3
+
+vars_files:
+  - secrets.yml

@@ -1,0 +1,104 @@
+- name: Stop firewalld
+  service: name=firewalld state=stopped enabled=no
+
+- name: Disable selinux
+  lineinfile:
+    dest: /etc/selinux/config
+    regexp: "^SELINUX="
+    line: "SELINUX=disabled"
+
+- name: Uninstall mariadb
+  yum:
+    name: ["mariadb", "Percona-XtraDB-Cluster-shared-compat-57"]
+    state: absent
+
+- name: Backup the CentOS-Base.repo
+  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
+
+- name: Download aliyun mirror repo
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  with_items: 
+     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+
+- name: Yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Yum makecache
+  shell: "yum makecache"
+
+- name: Install base packages
+  yum:
+    name: "{{ packages }}"
+    state: latest
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: latest
+
+- name: Install uncompyle6
+  pip: 
+    name: uncompyle6
+    state: latest
+    executable: pip3
+
+- name: Disable kernel hugepage
+  shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+
+- name: Disable swap
+  sysctl:
+    name: vm.swappiness
+    value: '0'
+    sysctl_file: /etc/sysctl.conf
+    state: present
+    reload: yes
+
+- name: Disable file system atime,barrier for root directory
+  mount:
+    path: /
+    src: "{{ ansible_cmdline.root }}"
+    fstype: ext4
+    opts: defaults,noatime,nobarrier
+    state: mounted
+    backup: yes
+    dump: '1'
+    passno: '1'
+
+- name: Remount file path for root directory
+  mount:
+    path: /
+    src: "{{ ansible_cmdline.root }}"
+    fstype: ext4
+    opts: defaults,noatime,nobarrier
+    state: remounted
+
+- name: Disable file system atime,barrier for data directory
+  mount:
+    path: "{{ install_dir }}"
+    src: "{{ fstab_src }}"
+    fstype: xfs
+    opts: defaults,noatime,nobarrier
+    state: mounted
+    backup: yes
+  when: whether_remount_data_disk
+
+- name: Remount file path for data directory
+  mount:
+    path: "{{ install_dir }}"
+    src: "{{ fstab_src }}"
+    fstype: xfs
+    opts: defaults,noatime,nobarrier
+    state: remounted
+  when: whether_remount_data_disk
+
+- name: Copy the hosts file to ansible
+  copy:
+    src: hosts
+    dest: /etc/ansible
+  run_once: true
