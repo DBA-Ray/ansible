@@ -1,7 +1,31 @@
 - name: Install xfsprogs
   yum:
-    name: xfsprogs
+    name: [xfsprogs, epel-release, python-pip, python2-pip.noarch]
     state: latest
+
+- name: Create a symbolic link for pip
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    owner: root
+    group: root
+    mode: 0755
+    force: 'yes'
+  with_items:
+    - { src: '/usr/bin/pip3', dest: '/usr/bin/pip' }
+
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: latest
+    executable: pip3.6
+
+- name: Install pexpect
+  pip:
+    name: pexpect
+    state: latest
+    executable: pip3.6
 
 - name: Create the new disk partition
   expect:

@@ -16,5 +16,5 @@
 - include: install_ansible_tower.yml
   when: is_ansible_tower | default(False)
 
-- include: download_roles_packages
+- include: download_roles_packages.yml
   when: is_download_roles_packages | default(False)
