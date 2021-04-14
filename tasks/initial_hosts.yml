@@ -1,0 +1,15 @@
+- name: ssh-copy
+  authorized_key: user=root key="{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+
+- name: Add IP address,hostname of all hosts to all hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item]['ansible_default_ipv4']['address'] }} {{ hostvars[item]['inventory_hostname_short'] }}"
+    state: present
+  with_items:
+    - "{{ groups.all }}"
+    - "ansible"
+
+- name: Config hostname
+  hostname:
+  name: "{{ inventory_hostname_short }}"

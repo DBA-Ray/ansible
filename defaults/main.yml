@@ -13,3 +13,5 @@ proxysql_package_url: "https://github.com/sysown/proxysql/releases/download/v{{ 
 whether_remount_data_disk: True
 fdisk_src: /dev/vdb
 fstab_src: "{{ fdisk_src }}1"
+#awx info
+whether_uninstall: False

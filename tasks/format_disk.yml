@@ -1,43 +1,53 @@
 - name: Install xfsprogs
   yum:
-    name: [xfsprogs, epel-release, python-pip, python2-pip.noarch]
+    name: [xfsprogs, epel-release, python-pip, python2-pip.noarch, expect]
     state: latest
 
-- name: Create a symbolic link for pip
-  file:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    state: link
-    owner: root
-    group: root
-    mode: 0755
-    force: 'yes'
-  with_items:
-    - { src: '/usr/bin/pip3', dest: '/usr/bin/pip' }
+#- name: Create a symbolic link for pip
+#  file:
+#    src: "{{ item.src }}"
+#    dest: "{{ item.dest }}"
+#    state: link
+#    owner: root
+#    group: root
+#    mode: 0755
+#    force: 'yes'
+#  with_items:
+#    - { src: '/usr/bin/pip3', dest: '/usr/bin/pip' }
 
-- name: Upgrade pip
-  pip:
-    name: pip
-    state: latest
-    executable: pip3.6
+#- name: Upgrade pip
+#  pip:
+#    name: pip
+#    state: latest
+#    executable: pip3.6
 
 - name: Install pexpect
   pip:
     name: pexpect
     state: latest
-    executable: pip3.6
+
+#- name: Create the new disk partition
+#  expect:
+#    command: "fdisk {{ fdisk_src }}"
+#    responses:
+#      (?i)): "n"
+#      (?i)): "\r"
+#      (?i)): "\r"
+#      (?i)): "\r"
+#      (?i)): "\r"
+#      (?i)): "w"
+#    echo: yes
+
+- name: Rendering format_disk.sh
+  template:
+    src: format_disk.sh.j2
+    dest: /tmp/format_disk.sh
+    owner: root
+    group: root
+    mode: 0774
 
 - name: Create the new disk partition
-  expect:
-    command: "fdisk {{ fdisk_src }}"
-    responses:
-      (?i)Command (m for help): n
-      (?i)Select: \r
-      (?i)Partition number: \r
-      (?i)First sector: \r
-      (?i)Last sector: \r
-      (?i)Command: w
-    echo: yes
+  shell: "/usr/bin/expect /tmp/format_disk.sh"
 
 - name: Format the new disk partition
   shell: "mkfs.xfs -f {{ fstab_src }}"

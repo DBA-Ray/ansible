@@ -1,0 +1,29 @@
+#!/usr/bin/expect
+
+spawn fdisk {{ fdisk_src }}
+
+expect "):"
+
+send n\r
+
+expect "p):"
+
+send \r
+
+expect "1):"
+
+send \r
+
+expect "2048):"
+
+send \r
+
+expect "):"
+
+send \r
+
+expect "):"
+
+send w\r
+
+interact

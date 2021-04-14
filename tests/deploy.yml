@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  gather_facts: True
+  remote_user: root
+  vars:
+    is_ansible_tower: False
+    is_download_roles_packages: True
+  roles:
+    - dba_ray.ansible

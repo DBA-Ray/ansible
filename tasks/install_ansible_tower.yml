@@ -51,10 +51,7 @@
 - name: Modify the inventory
   replace:
     path: "{{ item }}"
-    regexp: 'password='
-    replace: "password=/'{{ admin_password }}/'"
+    regexp: "password=''"
+    replace: "password='{{ admin_password }}'"
   with_items:
-    - { "{{ package_dir }}/{{ ansible_tower_version }}" }
-
-- name: Setup the ansible tower
-  shell: "sh -x {{ package_dir }}/{{ ansible_tower_version }}/setup.sh"
+    - "{{ package_dir }}/{{ ansible_tower_version }}/inventory"

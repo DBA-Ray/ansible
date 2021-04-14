@@ -2,13 +2,14 @@
 # tasks file for dba_ray.ansible
 - include: format_disk.yml
   when: is_format_disk | default(False)
-  run_once: true
+
+- include: initial_hosts.yml
+  when: is_initial_hosts | default(False)
 
 - include: password.yml
   when: is_ansible_tower | default(False)
 
 - include: system_check.yml
-  run_once: true
 
 - include: enable_pyhon3.yml
   when: is_python3 | default(False)

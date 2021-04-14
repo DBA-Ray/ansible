@@ -37,16 +37,15 @@
     name: "{{ packages }}"
     state: latest
 
-- name: Upgrade pip
-  pip:
-    name: pip
-    state: latest
+#- name: Upgrade pip
+#  pip:
+#    name: pip
+#    state: latest
 
 - name: Install uncompyle6
   pip: 
     name: uncompyle6
     state: latest
-    executable: pip3
 
 - name: Disable kernel hugepage
   shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag"
@@ -96,9 +95,3 @@
     opts: defaults,noatime,nobarrier
     state: remounted
   when: whether_remount_data_disk
-
-- name: Copy the hosts file to ansible
-  copy:
-    src: hosts
-    dest: /etc/ansible
-  run_once: true
