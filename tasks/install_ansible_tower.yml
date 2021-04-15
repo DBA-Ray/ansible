@@ -32,6 +32,11 @@
     state: absent
   when: whether_uninstall
 
+- name: Install uncompyle6
+  pip: 
+    name: uncompyle6
+    state: latest
+
 - name: Create directories for packages
   file: path={{ item }} state=directory
   with_items:

@@ -9,7 +9,17 @@
     dest: "{{ package_dir }}"
 
 - name: Download the ansible roles
-  shell: "ansible-galaxy install -r {{ package_dir }}/requirements.yml --force"
+  shell: "ansible-galaxy install {{ item }} --force"
+  with_items:
+    - dba_ray.haproxy
+    - dba_ray.keepalived
+    - dba_ray.proxysql
+    - dba_ray.mysql
+    - dba_ray.manage_proxysql
+    - dba_ray.manage_mysql
+    - dba_ray.scheduler_job
+    - dba_ray.mongodb
+    - dba_ray.ndb_cluster
   register: result
   retries: 7
   until: result is succeeded
@@ -24,11 +34,12 @@
   register: result
   retries: 7
   until: result is succeeded
+  run_once: True
 
 - name: Copy the packages to the ansible roles
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
   with_items:
-    - { src: "{{ package_dir }}/{{ mysql_version }}.tar.gz", dest: '/etc/asible/roles/dba_ray.mysql/files' }
-    - { src: "{{ package_dir }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm", dest: '/etc/asible/roles/dba_ray.proxysql/files' }
+    - { src: "{{ package_dir }}/{{ mysql_version }}.tar.gz", dest: '/etc/ansible/roles/dba_ray.mysql/files' }
+    - { src: "{{ package_dir }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm", dest: '/etc/ansible/roles/dba_ray.proxysql/files' }

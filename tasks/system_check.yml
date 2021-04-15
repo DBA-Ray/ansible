@@ -12,26 +12,6 @@
     name: ["mariadb", "Percona-XtraDB-Cluster-shared-compat-57"]
     state: absent
 
-- name: Backup the CentOS-Base.repo
-  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
-
-- name: Download aliyun mirror repo
-  get_url:
-    url: "{{ item.url }}"
-    dest: "{{ item.dest }}"
-    mode: '0644'
-  with_items: 
-     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
-     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
-
-- name: Yum-clean-metadata
-  command: yum clean metadata
-  args:
-    warn: no
-
-- name: Yum makecache
-  shell: "yum makecache"
-
 - name: Install base packages
   yum:
     name: "{{ packages }}"
@@ -41,11 +21,6 @@
 #  pip:
 #    name: pip
 #    state: latest
-
-- name: Install uncompyle6
-  pip: 
-    name: uncompyle6
-    state: latest
 
 - name: Disable kernel hugepage
   shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag"

@@ -1,5 +1,41 @@
+- name: Backup the CentOS-Base.repo
+  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
+
+- name: Download aliyun mirror repo
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  with_items: 
+     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+
+- name: Yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+
+- name: Yum makecache
+  shell: "yum makecache"
+
+- name: Install expect
+  yum:
+    name: expect
+    state: latest
+
+- name: Rendering ssh_keygen.sh
+  template:
+    src: ssh_keygen.sh.j2
+    dest: /tmp/ssh_keygen.sh
+    owner: root
+    group: root
+    mode: 0774
+
+- name: Create the id_rsa.pub
+  shell: "/usr/bin/expect /tmp/ssh_keygen.sh"
+
 - name: ssh-copy
-  authorized_key: user=root key="{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+  authorized_key: user=root state=present key="{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
 
 - name: Add IP address,hostname of all hosts to all hosts
   lineinfile:
@@ -12,4 +48,4 @@
 
 - name: Config hostname
   hostname:
-  name: "{{ inventory_hostname_short }}"
+    name: "{{ inventory_hostname_short }}"

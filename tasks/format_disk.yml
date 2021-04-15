@@ -1,6 +1,6 @@
 - name: Install xfsprogs
   yum:
-    name: [xfsprogs, epel-release, python-pip, python2-pip.noarch, expect]
+    name: [xfsprogs, expect]
     state: latest
 
 #- name: Create a symbolic link for pip
@@ -52,7 +52,7 @@
 - name: Format the new disk partition
   shell: "mkfs.xfs -f {{ fstab_src }}"
 
-- name: Remount file path for data directory
+- name: Mount file path for data directory
   mount:
     path: "{{ install_dir }}"
     src: "{{ fstab_src }}"

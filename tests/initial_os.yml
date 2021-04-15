@@ -3,8 +3,9 @@
   gather_facts: True
   remote_user: root
   vars:
-    is_format_disk: True
     is_initial_hosts: True
+    is_format_disk: True
+    is_system_check: True
     is_python3: False
   roles:
     - dba_ray.ansible

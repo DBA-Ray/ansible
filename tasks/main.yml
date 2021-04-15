@@ -1,21 +1,31 @@
 ---
 # tasks file for dba_ray.ansible
-- include: format_disk.yml
-  when: is_format_disk | default(False)
-
 - include: initial_hosts.yml
   when: is_initial_hosts | default(False)
 
-- include: password.yml
-  when: is_ansible_tower | default(False)
+- include: format_disk.yml
+  when: is_format_disk | default(False)
 
 - include: system_check.yml
+  when: is_system_check | default(False)
 
 - include: enable_pyhon3.yml
   when: is_python3 | default(False)
+
+- include: password.yml
+  when: (is_ansible_tower | default(False)) or (auto_config_pmm | default(False))
 
 - include: install_ansible_tower.yml
   when: is_ansible_tower | default(False)
 
 - include: download_roles_packages.yml
   when: is_download_roles_packages | default(False)
+
+- include: install_pmm_server.yml
+  when: install_pmm_server | default(False)
+
+- include: install_percona_tools.yml
+  when: install_percona_tools | default(False)
+
+- include: config_pmm_client.yml
+  when: auto_config_pmm | default(False)
