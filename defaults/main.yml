@@ -18,3 +18,5 @@ whether_uninstall: False
 #pmm info
 mysql_port: 3377
 pmm_port: 4431
+#mysql info
+remote_repo: https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm

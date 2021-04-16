@@ -1,0 +1,31 @@
+- name: Install mysql resource
+  yum:
+    name: "{{ remote_repo }}"
+    state: present
+
+- name: Copy the mysql-community.repo
+  copy: src=mysql-community.repo dest=/etc/yum.repos.d/mysql-community.repo
+
+- name: Install mysql client
+  yum:
+    name: mysql-community-client.x86_64
+    state: present
+  register: result
+  retries: 3
+  until: result is succeeded
+
+- name: Rendering mysql_config_editor.sh.j2
+  template:
+    src: mysql_config_editor.sh.j2
+    dest: /tmp/mysql_config_editor.sh
+    owner: root
+    group: root
+    mode: 0774
+
+- name: Config case sensitive password string match for logining proxysql or mysql
+  shell: "sh -x /tmp/mysql_config_editor.sh"
+
+- name: Remove mysql_config_editor.sh.j2
+  file:
+    path: "/tmp/mysql_config_editor.sh"
+    state: absent

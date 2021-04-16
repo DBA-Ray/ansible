@@ -1,0 +1,77 @@
+#!/bin/bash
+
+#密码中如果有$需要加\\包围
+
+port={{ mysql_port }}
+
+grep -v "^$" /etc/hosts|grep -v "^#"|grep -E 'slave|mgr|proxysql'|awk '{print $2}'| while read hostname
+
+do
+
+if [[ ${hostname} =~ 'slave' ]] || [[ ${hostname} =~ 'mgr' ]];then
+
+declare -A dic=([root]="{{ root_password }}" [repl]="{{ mysql_monitor_password }}")
+
+for key in $(echo ${!dic[*]})
+
+do
+
+echo "$key : ${dic[$key]}"
+
+/usr/bin/expect <<-EOF
+
+set timeout 30
+
+spawn /usr/bin/mysql_config_editor set --login-path=${hostname}_${key} --host=${hostname} -P ${port} --user=${key} --password
+
+expect *password*
+
+send '${dic[$key]}'\r
+
+expect *Continue*
+
+send y\r
+
+interact
+
+expect eof
+
+EOF
+
+done
+
+elif [[ ${hostname} =~ 'proxysql' ]];then
+
+declare -A dic=([repl]="{{ mysql_monitor_password }}")
+
+for key in $(echo ${!dic[*]})
+
+do
+
+echo "$key : ${dic[$key]}"
+
+/usr/bin/expect <<-EOF
+
+set timeout 30
+
+spawn /usr/bin/mysql_config_editor set --login-path=${hostname}_${key} --host=${hostname} -P 6032 --user=${key} --password
+
+expect *password*
+
+send '${dic[$key]}'\r
+
+expect *Continue*
+
+send y\r
+
+interact
+
+expect eof
+
+EOF
+
+done
+
+fi
+
+done
