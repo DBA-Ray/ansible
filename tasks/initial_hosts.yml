@@ -9,6 +9,9 @@
   with_items: 
      - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
      - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+  register: result
+  retries: 7
+  until: result is succeeded
 
 - name: Yum-clean-metadata
   command: yum clean metadata

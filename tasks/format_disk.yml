@@ -21,11 +21,6 @@
 #    state: latest
 #    executable: pip3.6
 
-- name: Install pexpect
-  pip:
-    name: pexpect
-    state: latest
-
 #- name: Create the new disk partition
 #  expect:
 #    command: "fdisk {{ fdisk_src }}"
