@@ -13,3 +13,7 @@
     - "pmm-admin add proxysql --username=admin --password='{{ admin_login_password }}' --host=127.0.0.1 --port=6032"
   when: >
           ( ansible_hostname in groups.proxysql_pro1 )
+
+- name: Add mongodb metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --cluster=\'mongodb_pro\' --replication-set=\'{{ replsetname }}\'"
+  when: inventory_hostname_short in groups.mongodb
