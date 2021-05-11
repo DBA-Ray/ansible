@@ -13,13 +13,22 @@
   retries: 7
   until: result is succeeded
 
+- name: Add nameserver
+  lineinfile:
+    dest: /etc/resolv.conf
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - 'nameserver 8.8.8.8'
+    - 'nameserver 114.114.114.114'
+
 - name: Yum-clean-metadata
   command: yum clean metadata
   args:
     warn: no
 
-#- name: Yum makecache
-#  shell: "yum makecache"
+- name: Yum makecache
+  shell: "yum makecache"
 
 - name: Cleaning up unfinished transaction
   shell: "yum-complete-transaction --cleanup-only;yum history redo last"
