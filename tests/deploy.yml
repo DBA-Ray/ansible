@@ -7,6 +7,6 @@
     is_download_roles_packages: False
     install_pmm_server: False # Whether to deploy pmm and send logs scripts via shell
     docker_re_install: False # Whether to re_install docker
-    mysql_config_editor: True 
+    mysql_config_editor: False
   roles:
     - dba_ray.ansible

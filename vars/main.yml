@@ -15,6 +15,9 @@ packages:
   - MySQL-python
   - zstd
   - python2-dnf
+  - epel-release
+  - python-pip
+  - python2-pip.noarch
 
 vars_files:
   - secrets.yml

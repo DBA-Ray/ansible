@@ -14,6 +14,26 @@
   when: >
           ( ansible_hostname in groups.proxysql_pro1 )
 
-- name: Add mongodb metric via pmm-admin
-  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --cluster=\'mongodb_pro\' --replication-set=\'{{ replsetname }}\'"
-  when: inventory_hostname_short in groups.mongodb
+- name: Add mongos metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --cluster=\'mongodb_shard\'"
+  when: inventory_hostname_short in groups.mongos
+
+- name: Add mongoc metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --cluster=\'mongodb_shard\' --replication-set=replconf"
+  when: inventory_hostname_short in groups.mongoconf
+
+- name: Add mongoshard0 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard --replication-set=shard0"
+  when: groups.mongoshard.index(inventory_hostname) >= 0 and groups.mongoshard.index(inventory_hostname) < 3
+
+- name: Add mongoshard1 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard --replication-set=shard1"
+  when: groups.mongoshard.index(inventory_hostname) > 2 and groups.mongoshard.index(inventory_hostname) < 6
+
+- name: Add mongoshard2 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard --replication-set=shard2"
+  when: groups.mongoshard.index(inventory_hostname) > 5
+
+#- name: Add mongodb metric via pmm-admin
+#  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --replication-set=\'{{ replsetname }}\'"
+#  when: inventory_hostname_short in groups.mongoreplset
