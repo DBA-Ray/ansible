@@ -34,6 +34,6 @@
   shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard --replication-set=shard2"
   when: groups.mongoshard.index(inventory_hostname) > 5
 
-#- name: Add mongodb metric via pmm-admin
-#  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --replication-set=\'{{ replsetname }}\'"
-#  when: inventory_hostname_short in groups.mongoreplset
+- name: Add mongodb metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --replication-set=\'{{ replsetname }}\'"
+  when: inventory_hostname_short in groups.mongoreplset

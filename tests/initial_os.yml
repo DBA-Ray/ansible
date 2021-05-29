@@ -3,9 +3,10 @@
   gather_facts: True
   remote_user: root
   vars:
-    is_initial_hosts: True # 如果后加入的主机开启此变量时需要hosts: all
-    is_format_disk: True
-    is_system_check: True
+    is_initial_hosts_file: False # 如果后加入的主机开启此变量时需要hosts: all
+    is_initial_hosts: False
+    is_format_disk: False
+    is_system_check: False
     is_python3: False
   roles:
     - dba_ray.ansible

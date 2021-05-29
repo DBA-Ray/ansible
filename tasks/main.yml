@@ -1,5 +1,8 @@
 ---
 # tasks file for dba_ray.ansible
+- include: initial_hosts_file.yml
+  when: is_initial_hosts_file | default(False)
+
 - include: initial_hosts.yml
   when: is_initial_hosts | default(False)
 

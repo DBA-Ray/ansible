@@ -8,22 +8,6 @@
     src: requirements.yml
     dest: "{{ package_dir }}"
 
-- name: Download the ansible roles
-  shell: "ansible-galaxy install {{ item }} --force"
-  with_items:
-    - dba_ray.haproxy
-    - dba_ray.keepalived
-    - dba_ray.proxysql
-    - dba_ray.mysql
-    - dba_ray.manage_proxysql
-    - dba_ray.manage_mysql
-    - dba_ray.scheduler_job
-    - dba_ray.mongodb
-    - dba_ray.ndb_cluster
-  register: result
-  retries: 7
-  until: result is succeeded
-
 - name: Download the packages for the mysql and the proxysql
   get_url:
     url: "{{ item }}"

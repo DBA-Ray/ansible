@@ -18,6 +18,7 @@ packages:
   - epel-release
   - python-pip
   - python2-pip.noarch
+  - zbackup
 
 vars_files:
   - secrets.yml

@@ -16,7 +16,7 @@ for key in $(echo ${!dic[*]})
 
 do
 
-echo "$key : ${dic[$key]}"
+#echo "$key : ${dic[$key]}"
 
 /usr/bin/expect <<-EOF
 
@@ -24,15 +24,10 @@ set timeout 30
 
 spawn /usr/bin/mysql_config_editor set --login-path=${hostname}_${key} --host=${hostname} -P ${port} --user=${key} --password
 
-expect *password*
-
-send '${dic[$key]}'\r
-
-expect *Continue*
-
-send y\r
-
-interact
+expect  {
+        "password" { send "${dic[$key]}\r";exp_continue }
+        "Continue" { send "y\r" }
+    }
 
 expect eof
 
@@ -48,7 +43,7 @@ for key in $(echo ${!dic[*]})
 
 do
 
-echo "$key : ${dic[$key]}"
+#echo "$key : ${dic[$key]}"
 
 /usr/bin/expect <<-EOF
 
@@ -56,15 +51,10 @@ set timeout 30
 
 spawn /usr/bin/mysql_config_editor set --login-path=${hostname}_${key} --host=${hostname} -P 6032 --user=${key} --password
 
-expect *password*
-
-send '${dic[$key]}'\r
-
-expect *Continue*
-
-send y\r
-
-interact
+expect  {
+        "password" { send "${dic[$key]}\r";exp_continue }
+        "Continue" { send "y\r" }
+    }
 
 expect eof
 
