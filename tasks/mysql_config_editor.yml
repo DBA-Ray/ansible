@@ -27,33 +27,10 @@
     group: root
     mode: 0774
 
-- name: Case sensitive password string match for logining mysql
-  expect:
-    command: "/usr/bin/mysql_config_editor set --login-path={{ hostvars[item]['inventory_hostname_short'] }}_root --host={{ hostvars[item]['inventory_hostname_short'] }} -P {{ mysql_port }} --user=root --password"
-    responses:
-      (?i)password: "{{ root_password }}"
-      (?i)Continue: y
-    echo: yes
-  with_items:
-    - "{{ groups.mgr_pro1 }}"
-    - "{{ groups.slave_monitor }}"
-  no_log: True
+- name: Config case sensitive password string match for logining proxysql or mysql
+  shell: "sh -x /tmp/mysql_config_editor.sh"
 
-- name: Case sensitive password string match for logining proxysql
-  expect:
-    command: "/usr/bin/mysql_config_editor set --login-path={{ hostvars[item]['inventory_hostname_short'] }}_repl --host={{ hostvars[item]['inventory_hostname_short'] }} -P 6032 --user=repl --password"
-    responses:
-      (?i)password: "{{ mysql_monitor_password }}"
-      (?i)Continue: y
-    echo: yes
-  with_items:
-    - "{{ groups.proxysql_pro1 }}"
-  no_log: True
-
-#- name: Config case sensitive password string match for logining proxysql or mysql
-#  shell: "sh -x /tmp/mysql_config_editor.sh"
-
-#- name: Remove mysql_config_editor.sh.j2
-#  file:
-#    path: "/tmp/mysql_config_editor.sh"
-#    state: absent
+- name: Remove mysql_config_editor.sh.j2
+  file:
+    path: "/tmp/mysql_config_editor.sh"
+    state: absent
