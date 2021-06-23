@@ -1,0 +1,22 @@
+- name: Config pmm server via pmm-admin
+  shell: "pmm-admin config --force --server-insecure-tls --server-url=https://admin:admin@ansible:{{ pmm_port }}"
+
+- name: Add mongos metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --cluster=\'mongodb_shard_{{ env }}\'"
+  when: inventory_hostname_short in groups.mongos
+
+- name: Add mongoc metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --environment={{ env }} --cluster=\'mongodb_shard_{{ env }}\' --replication-set=replconf"
+  when: inventory_hostname_short in groups.mongoconf
+
+- name: Add mongoshard0 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard0"
+  when: groups.mongoshard.index(inventory_hostname) >= 0 and groups.mongoshard.index(inventory_hostname) < 3
+
+- name: Add mongoshard1 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard1"
+  when: groups.mongoshard.index(inventory_hostname) > 2 and groups.mongoshard.index(inventory_hostname) < 6
+
+- name: Add mongoshard2 metric via pmm-admin
+  shell: "pmm-admin add mongodb --username=pmm --password=\'{{ root_password }}\' --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard2"
+  when: groups.mongoshard.index(inventory_hostname) > 5

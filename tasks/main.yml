@@ -30,8 +30,20 @@
 - include: install_percona_tools.yml
   when: install_percona_tools | default(False)
 
-- include: config_pmm_client.yml
-  when: auto_config_pmm | default(False)
+- include: config_pmm_mysql.yml
+  when: config_mysql | default(False)
+
+- include: config_pmm_proxysql.yml
+  when: config_proxysql | default(False)
+
+- include: config_pmm_mongoreplset.yml
+  when: config_mongoreplset | default(False)
+
+- include: config_pmm_mongocluster.yml
+  when: config_mongocluster | default(False)
+
+- include: config_pmm_mongocluster_pro.yml
+  when: config_mongocluster_pro | default(False)
 
 - include: mysql_config_editor.yml
   when: mysql_config_editor | default(False)

@@ -4,9 +4,10 @@
   remote_user: root
   vars:
     install_percona_tools: False # Whether to install percona tools
-    auto_config_pmm: False # Whether to config pmm client connect to pmm server
     config_mysql: False
     config_proxysql: False
-    config_mongodb: False
+    config_mongoreplset: False
+    config_mongocluster: False
+    config_mongocluster_pro: False
   roles:
     - dba_ray.ansible

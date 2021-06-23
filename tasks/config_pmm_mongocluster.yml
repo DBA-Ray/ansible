@@ -1,0 +1,53 @@
+- name: Config pmm server via pmm-admin
+  shell: "pmm-admin config --force --server-insecure-tls --server-url=https://admin:admin@ansible:{{ pmm_port }}"
+
+- name: Add mongos metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --username=root --password=\'{{ root_password }}\' --port=27077 --environment={{ env }} --cluster=mongodb_shard_{{ env }}"
+
+- name: Add mongoc metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo1_{{ env }}_conf --username=root --password=\'{{ root_password }}\' --port=27078 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=replconf"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 0
+  
+- name: Add mongoc metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo2_{{ env }}_conf --username=root --password=\'{{ root_password }}\' --port=27078 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=replconf"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 1
+
+- name: Add mongoc metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo3_{{ env }}_conf --username=root --password=\'{{ root_password }}\' --port=27078 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=replconf"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 2
+
+- name: Add mongoshard0 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo1_{{ env }}_shard0 --username=pmm --password=\'{{ root_password }}\' --port=27017 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard0"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 0
+  
+- name: Add mongoshard0 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo2_{{ env }}_shard0 --username=pmm --password=\'{{ root_password }}\' --port=27017 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard0"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 1
+
+- name: Add mongoshard0 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo3_{{ env }}_shard0 --username=pmm --password=\'{{ root_password }}\' --port=27017 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard0"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 2
+
+- name: Add mongoshard1 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo1_{{ env }}_shard1 --username=pmm --password=\'{{ root_password }}\' --port=27018 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard1"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 0
+  
+- name: Add mongoshard1 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo2_{{ env }}_shard1 --username=pmm --password=\'{{ root_password }}\' --port=27018 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard1"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 1
+
+- name: Add mongoshard1 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo3_{{ env }}_shard1 --username=pmm --password=\'{{ root_password }}\' --port=27018 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard1"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 2
+
+- name: Add mongoshard2 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo1_{{ env }}_shard2 --username=pmm --password=\'{{ root_password }}\' --port=27019 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard2"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 0
+  
+- name: Add mongoshard2 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo2_{{ env }}_shard2 --username=pmm --password=\'{{ root_password }}\' --port=27019 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard2"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 1
+
+- name: Add mongoshard2 metric via pmm-admin for share cluster
+  shell: "pmm-admin add mongodb --service-name=mongo3_{{ env }}_shard2 --username=pmm --password=\'{{ root_password }}\' --port=27019 --environment={{ env }} --cluster=mongodb_shard_{{ env }} --replication-set=shard2"
+  when: groups.mongodb_{{ env }}.index(inventory_hostname) == 2
