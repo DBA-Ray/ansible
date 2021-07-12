@@ -15,12 +15,6 @@
 - include: enable_pyhon3.yml
   when: is_python3 | default(False)
 
-- include: password.yml
-  when: (is_ansible_tower | default(False)) or (auto_config_pmm | default(False)) or (mysql_config_editor | default(False))
-
-- include: install_ansible_tower.yml
-  when: is_ansible_tower | default(False)
-
 - include: download_roles_packages.yml
   when: is_download_roles_packages | default(False)
 
@@ -29,6 +23,19 @@
 
 - include: install_percona_tools.yml
   when: install_percona_tools | default(False)
+
+- include: password.yml
+  when: >
+        (is_ansible_tower | default(False)) or 
+        (mysql_config_editor | default(False)) or
+        (config_mysql | default(False)) or
+        (config_proxysql | default(False)) or
+        (config_mongoreplset | default(False)) or
+        (config_mongocluster | default(False)) or
+        (config_mongocluster_pro | default(False))
+
+- include: install_ansible_tower.yml
+  when: is_ansible_tower | default(False)
 
 - include: config_pmm_mysql.yml
   when: config_mysql | default(False)

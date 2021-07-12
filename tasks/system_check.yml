@@ -25,13 +25,28 @@
 - name: Disable kernel hugepage
   shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag"
 
-- name: Disable swap
+- name: Disable swap,expand tcp connection parameter and modify memory strategy
   sysctl:
-    name: vm.swappiness
-    value: '0'
-    sysctl_file: /etc/sysctl.conf
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    sysctl_set: yes
     state: present
     reload: yes
+    sysctl_file: /etc/sysctl.conf
+  with_items:
+    - { name: 'net.core.somaxconn', value: 8192 }
+    - { name: 'vm.overcommit_memory', value: 1 }
+    - { name: 'vm.swappiness', value: 0 }
+
+- name: Add or modify all nofile limits for wildcard domain
+  pam_limits:
+    domain: '*'
+    limit_type: "{{ item }}"
+    limit_item: nofile
+    value: 65535
+  with_items:
+    - hard
+    - soft
 
 - name: Disable file system atime,barrier for root directory
   mount:
