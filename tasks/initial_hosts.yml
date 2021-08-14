@@ -32,8 +32,8 @@
   args:
     warn: no
 
-#- name: Yum makecache
-#  shell: "yum makecache"
+- name: Yum makecache
+  shell: "yum makecache fast"
 
 - name: Cleaning up unfinished transaction
   shell: "yum-complete-transaction --cleanup-only;yum history redo last"

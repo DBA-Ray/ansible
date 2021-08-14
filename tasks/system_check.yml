@@ -22,10 +22,10 @@
 #    name: pip
 #    state: latest
 
-- name: Disable kernel hugepage
-  shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag"
+- name: Disable kernel hugepage and adjust aio
+  shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag;echo 1048576 > /proc/sys/fs/aio-max-nr"
 
-- name: Disable swap,expand tcp connection parameter and modify memory strategy
+- name: Disable swap,expand tcp connection parameter,modify memory strategy and enable network forward
   sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"
@@ -34,9 +34,10 @@
     reload: yes
     sysctl_file: /etc/sysctl.conf
   with_items:
-    - { name: 'net.core.somaxconn', value: 8192 }
+    - { name: 'net.core.somaxconn', value: 8096 }
     - { name: 'vm.overcommit_memory', value: 1 }
     - { name: 'vm.swappiness', value: 0 }
+    - { name: 'net.ipv4.ip_forward', value: 1 }
 
 - name: Add or modify all nofile limits for wildcard domain
   pam_limits:
