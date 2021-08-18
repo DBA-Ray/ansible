@@ -28,7 +28,7 @@
     mode: 0774
 
 - name: Config case sensitive password string match for logining proxysql or mysql
-  shell: "sh -x /tmp/mysql_config_editor.sh"
+  shell: "sh /tmp/mysql_config_editor.sh"
 
 - name: Remove mysql_config_editor.sh.j2
   file:
