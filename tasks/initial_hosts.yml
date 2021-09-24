@@ -22,6 +22,14 @@
     - 'nameserver 8.8.8.8'
     - 'nameserver 114.114.114.114'
 
+- name: Persistent nameserver
+  lineinfile:
+    dest: /etc/sysconfig/network-scripts/ifcfg-eth0
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - 'PEERDNS=no'
+
 - name: Restart network
   systemd:
     name: network
