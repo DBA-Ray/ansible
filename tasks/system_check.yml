@@ -7,9 +7,9 @@
     regexp: "^SELINUX="
     line: "SELINUX=disabled"
 
-- name: Uninstall mariadb
+- name: Uninstall mariadb and percona server
   yum:
-    name: ["mariadb", "Percona-XtraDB-Cluster-shared-compat-57"]
+    name: ["mariadb", "Percona-XtraDB-Cluster*", "Percona-Server*"]
     state: absent
 
 - name: Install base packages
