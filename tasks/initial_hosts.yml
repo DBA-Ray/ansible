@@ -35,6 +35,10 @@
     name: network
     state: restarted
 
+- name: Install yum-utils
+  yum:
+    name: yum-utils
+    state: latest
 - name: Yum-clean-metadata
   command: yum clean metadata
   args:
