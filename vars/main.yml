@@ -19,6 +19,7 @@ packages:
   - python-pip
   - python2-pip.noarch
   - zbackup
+  - sysstat
 
 vars_files:
   - secrets.yml

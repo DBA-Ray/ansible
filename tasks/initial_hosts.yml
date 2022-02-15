@@ -39,6 +39,7 @@
   yum:
     name: yum-utils
     state: latest
+
 - name: Yum-clean-metadata
   command: yum clean metadata
   args:

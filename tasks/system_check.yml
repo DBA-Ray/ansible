@@ -7,6 +7,9 @@
     regexp: "^SELINUX="
     line: "SELINUX=disabled"
 
+- name: Comment out swap info
+  shell: "sed -i '/swap/s/^/##/' /etc/fstab"
+
 - name: Uninstall mariadb and percona server
   yum:
     name: ["mariadb", "Percona-XtraDB-Cluster*", "Percona-Server*"]
@@ -17,10 +20,10 @@
     name: "{{ packages }}"
     state: latest
 
-#- name: Upgrade pip
-#  pip:
-#    name: pip
-#    state: latest
+- name: Upgrade pip
+  pip:
+    name: pip
+    state: latest
 
 - name: Disable kernel hugepage and adjust aio
   shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag;echo 1048576 > /proc/sys/fs/aio-max-nr"
