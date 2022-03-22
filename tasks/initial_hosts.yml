@@ -1,18 +1,3 @@
-- name: Backup the CentOS-Base.repo
-  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
-
-- name: Download aliyun mirror repo
-  get_url:
-    url: "{{ item.url }}"
-    dest: "{{ item.dest }}"
-    mode: '0644'
-  with_items: 
-     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
-     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
-  register: result
-  retries: 7
-  until: result is succeeded
-
 - name: Add nameserver
   lineinfile:
     dest: /etc/resolv.conf
@@ -30,10 +15,25 @@
   with_items:
     - 'PEERDNS=no'
 
-- name: Restart network
-  systemd:
-    name: network
-    state: restarted
+# - name: Restart network
+#   systemd:
+#     name: network
+#     state: restarted
+
+- name: Backup the CentOS-Base.repo
+  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
+
+- name: Download aliyun mirror repo
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  with_items: 
+     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+  register: repo_result
+  retries: 7
+  until: repo_result is succeeded
 
 - name: Install yum-utils
   yum:
@@ -51,10 +51,21 @@
 - name: Cleaning up unfinished transaction
   shell: "yum-complete-transaction --cleanup-only;yum history redo last"
 
-- name: Install expect
+- name: Install base packages
   yum:
-    name: expect
+    name: "{{ packages }}"
     state: latest
+  register: base_result
+  retries: 3
+  until: base_result is succeeded
+
+# - name: Upgrade pip
+#   pip:
+#     name: pip
+#     state: latest
+
+# - name: Upgrade pip
+#   shell: "pip install --upgrade pip"
 
 - name: Rendering ssh_keygen.sh
   template:

@@ -13,7 +13,7 @@
     state: link
   with_items:
     - { src: '/usr/bin/python3', dest: '/usr/bin/python' }
-    - { src: '/usr/bin/pip3', dest: '/usr/bin/pip' }
+    #- { src: '/usr/bin/pip3.6', dest: '/usr/bin/pip' }
 
 - name: Modify the yum related
   replace:
@@ -21,5 +21,5 @@
     regexp: '#!/usr/bin/python'
     replace: '#!/usr/bin/python2'
   with_items:
-    - { '/usr/bin/yum' }
-    - { '/usr/libexec/urlgrabber-ext-down' }
+    - '/usr/bin/yum'
+    - '/usr/libexec/urlgrabber-ext-down'
