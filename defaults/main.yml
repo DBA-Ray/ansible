@@ -10,13 +10,13 @@ proxysql_version: '2.3.2'
 mysql_package_url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_version }}.tar.gz"
 proxysql_package_url: "https://github.com/sysown/proxysql/releases/download/v{{ proxysql_version }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm"
 #disk info
-whether_remount_data_disk: False
+whether_remount_data_disk: True
 fdisk_src: /dev/vdb
 fstab_src: "{{ fdisk_src }}1"
 #awx info
-whether_uninstall: True
+whether_uninstall: False
 #pmm info
-pmm_hostname: monitor_pro1
+pmm_hostname: 10.56.8.97
 mysql_port: 3377
 pmm_port: 443
 #mysql info

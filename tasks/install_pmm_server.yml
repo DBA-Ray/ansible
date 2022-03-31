@@ -54,13 +54,13 @@
     state: started
 
 - name: Docker pull image
-  shell: "docker pull percona/pmm-server:2"
+  shell: "sudo docker pull percona/pmm-server:2"
 
 - name: Docker create container
-  shell: "docker create -v /srv --name pmm-data percona/pmm-server:2 /bin/true"
+  shell: "sudo docker create -v /srv --name pmm-data percona/pmm-server:2 /bin/true"
 
 - name: Dcoer run container
-  shell: "docker run --detach --restart always \
+  shell: "sudo docker run --detach --restart always \
 --publish 80:80 --publish {{ pmm_port }}:443 \
 --volumes-from pmm-data --name pmm-server \
 percona/pmm-server:2"

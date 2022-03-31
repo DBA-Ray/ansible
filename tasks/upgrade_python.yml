@@ -1,0 +1,36 @@
+- name: Backup the python and the pip
+  copy: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: '/usr/bin/python', dest: '/usr/bin/python.bak' }
+    - { src: '/usr/bin/pip', dest: '/usr/bin/pip.bak' }
+
+# - name: Modify the yum related
+#   replace:
+#     path: "{{ item }}"
+#     regexp: '#!/usr/bin/python'
+#     replace: '#!/usr/bin/python2'
+#   with_items:
+#     - '/usr/bin/yum'
+#     - '/usr/libexec/urlgrabber-ext-down'
+
+- name: Copy python compressed package
+  copy:
+    src: python2.7.9.tgz
+    dest: "{{ install_dir }}"
+
+- name: Uncompress python package
+  unarchive:
+    src: "{{ install_dir }}/python2.7.9.tgz"
+    dest: "/usr/bin/"
+    remote_src: yes
+
+- name: Create a symbolic link
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  with_items:
+    - { src: '/usr/bin/python', dest: '/usr/bin/python2.7.9' }
+    #- { src: '/usr/bin/pip3.6', dest: '/usr/bin/pip' }

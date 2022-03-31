@@ -42,10 +42,10 @@
     mode: 0774
 
 - name: Create the new disk partition
-  shell: "/usr/bin/expect /tmp/format_disk.sh"
+  shell: "sudo /usr/bin/expect /tmp/format_disk.sh"
 
 - name: Format the new disk partition
-  shell: "mkfs.xfs -f {{ fstab_src }}"
+  shell: "sudo mkfs.xfs -f {{ fstab_src }}"
 
 - name: Mount file path for data directory
   mount:

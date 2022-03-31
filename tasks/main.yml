@@ -1,8 +1,5 @@
 ---
 # tasks file for dba_ray.ansible
-- include: initial_hosts_file.yml
-  when: is_initial_hosts_file | default(False)
-
 - include: initial_hosts.yml
   when: is_initial_hosts | default(False)
 
@@ -12,8 +9,11 @@
 - include: system_check.yml
   when: is_system_check | default(False)
 
-- include: enable_pyhon3.yml
-  when: is_python3 | default(False)
+- include: initial_hosts_file.yml
+  when: is_initial_hosts_file | default(False)
+
+- include: upgrade_python.yml
+  when: is_python | default(False)
 
 - include: download_roles_packages.yml
   when: is_download_roles_packages | default(False)
