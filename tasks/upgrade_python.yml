@@ -15,22 +15,25 @@
 #     - '/usr/bin/yum'
 #     - '/usr/libexec/urlgrabber-ext-down'
 
-- name: Copy python compressed package
+- name: Copy pip compressed package
   copy:
-    src: python2.7.9.tgz
-    dest: "{{ install_dir }}"
+    src: pip-20.2.4.tar.gz
+    dest: "{{ package_dir }}"
 
-- name: Uncompress python package
+- name: Uncompress pip package
   unarchive:
-    src: "{{ install_dir }}/python2.7.9.tgz"
-    dest: "/usr/bin/"
+    src: "{{ package_dir }}/pip-20.2.4.tar.gz"
+    dest: "{{ package_dir }}"
     remote_src: yes
 
-- name: Create a symbolic link
-  file:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    state: link
-  with_items:
-    - { src: '/usr/bin/python', dest: '/usr/bin/python2.7.9' }
-    #- { src: '/usr/bin/pip3.6', dest: '/usr/bin/pip' }
+- name: Setup pip package
+  shell: "python {{ package_dir }}/pip-20.2.4/setup.py install"
+
+# - name: Create a symbolic link
+#   file:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     state: link
+#   with_items:
+#     - { src: '/usr/bin/python', dest: '/usr/bin/python2.7.9' }
+#     - { src: '/usr/bin/pip3.6', dest: '/usr/bin/pip' }

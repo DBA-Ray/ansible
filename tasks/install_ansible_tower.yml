@@ -34,7 +34,7 @@
   pip: 
     name: uncompyle6
     state: latest
-    executable: pip3.6
+    #executable: pip3.6
 
 - name: Create directories for packages
   file: path={{ item }} state=directory

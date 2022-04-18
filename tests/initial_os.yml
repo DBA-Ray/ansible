@@ -1,15 +1,14 @@
 ---
-- hosts: all
+- hosts: delay_replica1_dev1
   gather_facts: True
   remote_user: root
   become: yes
   become_user: root
   become_method: su
   vars:
-    is_initial_hosts_file: True # 如果后加入的主机开启此变量时需要hosts: all
-    is_initial_hosts: False
+    is_initial_hosts_file: False # 如果后加入的主机开启此变量时需要hosts: all
+    is_initial_hosts: True
     is_format_disk: True
     is_system_check: True
-    is_python: False
   roles:
     - dba_ray.ansible

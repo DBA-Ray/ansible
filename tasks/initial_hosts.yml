@@ -1,39 +1,39 @@
-- name: Add nameserver
-  lineinfile:
-    dest: /etc/resolv.conf
-    line: "{{ item }}"
-    state: present
-  with_items:
-    - 'nameserver 8.8.8.8'
-    - 'nameserver 114.114.114.114'
+# - name: Add nameserver
+#   lineinfile:
+#     dest: /etc/resolv.conf
+#     line: "{{ item }}"
+#     state: present
+#   with_items:
+#     - 'nameserver 8.8.8.8'
+#     - 'nameserver 114.114.114.114'
 
-- name: Persistent nameserver
-  lineinfile:
-    dest: /etc/sysconfig/network-scripts/ifcfg-eth0
-    line: "{{ item }}"
-    state: present
-  with_items:
-    - 'PEERDNS=no'
+# - name: Persistent nameserver
+#   lineinfile:
+#     dest: /etc/sysconfig/network-scripts/ifcfg-eth0
+#     line: "{{ item }}"
+#     state: present
+#   with_items:
+#     - 'PEERDNS=no'
 
-# - name: Restart network
-#   systemd:
-#     name: network
-#     state: restarted
+# # - name: Restart network
+# #   systemd:
+# #     name: network
+# #     state: restarted
 
-- name: Backup the CentOS-Base.repo
-  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
+# - name: Backup the CentOS-Base.repo
+#   copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
 
-- name: Download aliyun mirror repo
-  get_url:
-    url: "{{ item.url }}"
-    dest: "{{ item.dest }}"
-    mode: '0644'
-  with_items: 
-     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
-     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
-  register: repo_result
-  retries: 7
-  until: repo_result is succeeded
+# - name: Download aliyun mirror repo
+#   get_url:
+#     url: "{{ item.url }}"
+#     dest: "{{ item.dest }}"
+#     mode: '0644'
+#   with_items: 
+#      - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+#      - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+#   register: repo_result
+#   retries: 7
+#   until: repo_result is succeeded
 
 - name: Install yum-utils
   yum:
