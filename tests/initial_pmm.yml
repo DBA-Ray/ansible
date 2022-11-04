@@ -1,5 +1,5 @@
 ---
-- hosts: proxysql_dev1
+- hosts: proxysql_pro1
   gather_facts: True
   remote_user: root
   vars:

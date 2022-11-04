@@ -21,7 +21,7 @@
   run_once: True
 
 - name: Download the ansible roles for mysql and proxysql
-  shell: "sudo ansible-galaxy install dba_ray.mysql --force;sudo ansible-galaxy install dba_ray.proxysql --force"
+  shell: "ansible-galaxy install dba_ray.mysql --force;ansible-galaxy install dba_ray.proxysql --force"
 
 - name: Copy the packages to the ansible roles
   copy:

@@ -2,9 +2,9 @@
 - hosts: all
   gather_facts: True
   remote_user: root
-  become: yes
-  become_user: root
-  become_method: su
+  # become: yes
+  # become_user: root
+  # become_method: su
   vars:
     is_initial_hosts_file: True # 如果后加入的主机开启此变量时需要hosts: all
   roles:

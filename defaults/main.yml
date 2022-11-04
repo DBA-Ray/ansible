@@ -1,5 +1,7 @@
 ---
 # defaults file for dba_ray.ansible
+# Whether you need ali yum source
+is_ali_yum_source: false
 ansible_tower_version: "ansible-tower-setup-3.7.4-1"
 restore_backup_file: "tower-initial.tar.gz"
 install_dir: /data
@@ -10,7 +12,8 @@ proxysql_version: '2.3.2'
 mysql_package_url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_version }}.tar.gz"
 proxysql_package_url: "https://github.com/sysown/proxysql/releases/download/v{{ proxysql_version }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm"
 #disk info
-whether_remount_data_disk: True
+whether_size_up_2T: true
+whether_remount_data_disk: true
 fdisk_src: /dev/vdb
 fstab_src: "{{ fdisk_src }}1"
 #awx info

@@ -8,7 +8,7 @@
     line: "SELINUX=disabled"
 
 - name: Comment out swap info
-  shell: "sudo sed -i '/swap/s/^/##/' /etc/fstab"
+  shell: "sed -i '/swap/s/^/##/' /etc/fstab"
 
 - name: Uninstall mariadb and percona server
   yum:
@@ -16,7 +16,7 @@
     state: absent
 
 - name: Disable kernel hugepage and adjust aio
-  shell: "sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag;echo 1048576 > /proc/sys/fs/aio-max-nr"
+  shell: "echo never > /sys/kernel/mm/transparent_hugepage/enabled;echo never > /sys/kernel/mm/transparent_hugepage/defrag;echo 1048576 > /proc/sys/fs/aio-max-nr"
 
 - name: Disable swap,expand tcp connection parameter,modify memory strategy and enable network forward
   sysctl:

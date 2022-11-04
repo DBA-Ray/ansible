@@ -6,6 +6,6 @@
     is_python: False
     is_ansible_tower: False
     is_download_roles_packages: False
-    mysql_config_editor: False
+    mysql_config_editor: true
   roles:
     - dba_ray.ansible

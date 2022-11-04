@@ -40,12 +40,30 @@
     owner: root
     group: root
     mode: 0774
+  when: not whether_size_up_2T
 
 - name: Create the new disk partition
-  shell: "sudo /usr/bin/expect /tmp/format_disk.sh"
+  shell: "/usr/bin/expect /tmp/format_disk.sh"
+  when: not whether_size_up_2T
+
+- name: Create a new primary partition by parted
+  parted:
+    device: "{{ fdisk_src }}"
+    label: gpt
+    number: 1
+    state: present
+    part_start: 1%
+    part_end: 100%
+  when: whether_size_up_2T
+
+# - name: Format the new disk partition
+#   shell: "mkfs.xfs -f {{ fstab_src }}"
 
 - name: Format the new disk partition
-  shell: "sudo mkfs.xfs -f {{ fstab_src }}"
+  filesystem:
+    fstype: xfs
+    dev: "{{ fstab_src }}"
+    force: yes
 
 - name: Mount file path for data directory
   mount:
