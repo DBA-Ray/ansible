@@ -1,69 +1,69 @@
-# - name: Add nameserver
+- name: Add nameserver
+  lineinfile:
+    dest: /etc/resolv.conf
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - 'nameserver 8.8.8.8'
+    - 'nameserver 114.114.114.114'
+    - 'search localdomain'
+  when: is_ali_yum_source
+
+# - name: Persistent nameserver
 #   lineinfile:
-#     dest: /etc/resolv.conf
+#     dest: /etc/sysconfig/network-scripts/ifcfg-eth0
 #     line: "{{ item }}"
 #     state: present
 #   with_items:
-#     - 'nameserver 8.8.8.8'
-#     - 'nameserver 114.114.114.114'
-#     - 'search localdomain'
-#   when: is_ali_yum_source
+#     - 'PEERDNS=no'
 
-# # - name: Persistent nameserver
-# #   lineinfile:
-# #     dest: /etc/sysconfig/network-scripts/ifcfg-eth0
-# #     line: "{{ item }}"
-# #     state: present
-# #   with_items:
-# #     - 'PEERDNS=no'
+# - name: Restart network
+#   systemd:
+#     name: network
+#     state: restarted
 
-# # - name: Restart network
-# #   systemd:
-# #     name: network
-# #     state: restarted
+- name: Backup the CentOS-Base.repo
+  copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
+  when: is_ali_yum_source
 
-# - name: Backup the CentOS-Base.repo
-#   copy: src=/etc/yum.repos.d/CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo.backup
-#   when: is_ali_yum_source
+- name: Download aliyun mirror repo
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: '0644'
+  with_items: 
+     - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+     - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
+  register: repo_result
+  retries: 7
+  until: repo_result is succeeded
+  when: is_ali_yum_source
 
-# - name: Download aliyun mirror repo
-#   get_url:
-#     url: "{{ item.url }}"
-#     dest: "{{ item.dest }}"
-#     mode: '0644'
-#   with_items: 
-#      - { url: 'http://mirrors.aliyun.com/repo/Centos-7.repo', dest: '/etc/yum.repos.d/CentOS-Base.repo' }
-#      - { url: 'http://mirrors.aliyun.com/repo/epel-7.repo', dest: '/etc/yum.repos.d/epel-7.repo' }
-#   register: repo_result
-#   retries: 7
-#   until: repo_result is succeeded
-#   when: is_ali_yum_source
+- name: Install yum-utils
+  yum:
+    name: yum-utils
+    state: latest
 
-# - name: Install yum-utils
-#   yum:
-#     name: yum-utils
-#     state: latest
+- name: Yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
+  when: is_ali_yum_source
 
-# - name: Yum-clean-metadata
-#   command: yum clean metadata
-#   args:
-#     warn: no
-#   when: is_ali_yum_source
+- name: Yum makecache
+  shell: "yum makecache fast"
+  when: is_ali_yum_source
 
-# - name: Yum makecache
-#   shell: "yum makecache fast"
-#   when: is_ali_yum_source
+- name: Cleaning up unfinished transaction
+  shell: "yum-complete-transaction --cleanup-only;yum history redo last"
 
-# - name: Cleaning up unfinished transaction
-#   shell: "yum-complete-transaction --cleanup-only;yum history redo last"
-
-# - name: Install base packages
-#   yum:
-#     name: "{{ packages }}"
-#     state: latest
-#   register: base_result
-#   retries: 3
-#   until: base_result is succeeded
+- name: Install base packages
+  yum:
+    name: "{{ packages }}"
+    state: latest
+  register: base_result
+  retries: 3
+  until: base_result is succeeded
 
 - name: Rendering ssh_keygen.sh
   template:
@@ -79,6 +79,6 @@
 - name: ssh-copy
   authorized_key: user=root state=present key="{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
 
-# - name: Config hostname
-#   hostname:
-#     name: "{{ inventory_hostname_short }}"
+- name: Config hostname
+  hostname:
+    name: "{{ inventory_hostname_short }}"
