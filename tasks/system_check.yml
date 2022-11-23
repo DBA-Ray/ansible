@@ -39,15 +39,39 @@
     limit_item: nofile
     value: 65535
   with_items:
-    - hard
-    - soft
+    - { type: 'hard', item: 'nofile', value: '1024000' }
+    - { type: 'soft', item: 'nofile', value: '1024000' }
+    - { type: 'hard', item: 'nproc', value: 'unlimited' }
+    - { type: 'soft', item: 'nproc', value: 'unlimited' }
+    - { type: 'hard', item: 'core', value: 'unlimited' }
+    - { type: 'soft', item: 'core', value: 'unlimited' }
+    - { type: 'hard', item: 'memlock', value: 'unlimited' }
+    - { type: 'soft', item: 'memlock', value: 'unlimited' }
+
+- name: Comment out the root domain limit in limits.conf
+  replace:
+    path: "/etc/security/limits.conf"
+    regexp: "{{ item.original }}"
+    replace: "{{ item.change }}"
+  with_items:
+    - { original: 'root soft nofile 65535', change: '#root soft nofile 65535' }
+    - { original: 'root hard nofile 65535', change: '#root hard nofile 65535' }
+
+- name: Comment out the root domain limit in 20-nproc.conf
+  replace:
+    path: "20-nproc.conf"
+    regexp: "{{ item.original }}"
+    replace: "{{ item.change }}"
+  with_items:
+    - { original: '*          soft    nproc     4096', change: '#*          soft    nproc     4096' }
+    - { original: 'root       soft    nproc     unlimited', change: '#root       soft    nproc     unlimited' }
 
 - name: Disable file system atime,barrier for root directory
   mount:
     path: /
     src: "{{ ansible_cmdline.root }}"
     fstype: ext4
-    opts: defaults,noatime,nobarrier
+    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
     state: mounted
     backup: yes
     dump: '1'

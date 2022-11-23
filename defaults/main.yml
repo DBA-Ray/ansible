@@ -19,7 +19,7 @@ fstab_src: "{{ fdisk_src }}1"
 #awx info
 whether_uninstall: False
 #pmm info
-pmm_hostname: 10.56.8.97
+pmm_hostname: 10.56.7.108
 mysql_port: 3377
 pmm_port: 443
 #mysql info

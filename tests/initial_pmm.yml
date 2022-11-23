@@ -1,12 +1,12 @@
 ---
-- hosts: proxysql_pro1
+- hosts: mgr_dev1:slave_monitor_dev1
   gather_facts: True
   remote_user: root
   vars:
     install_pmm_server: False # Whether to deploy pmm and send logs scripts via shell
     docker_re_install: False # Whether to re_install docker
     install_percona_tools: False # Whether to install percona tools
-    config_mysql: False
+    config_mysql: True
     config_proxysql: False
     config_mongoreplset: False
     config_mongocluster: False
