@@ -35,9 +35,10 @@
 - name: Add or modify all nofile limits for wildcard domain
   pam_limits:
     domain: '*'
-    limit_type: "{{ item }}"
-    limit_item: nofile
-    value: 65535
+    limit_type: "{{ item.type }}"
+    limit_item: "{{ item.item }}"
+    value: "{{ item.value }}"
+    backup: yes
   with_items:
     - { type: 'hard', item: 'nofile', value: '1024000' }
     - { type: 'soft', item: 'nofile', value: '1024000' }
@@ -47,23 +48,25 @@
     - { type: 'soft', item: 'core', value: 'unlimited' }
     - { type: 'hard', item: 'memlock', value: 'unlimited' }
     - { type: 'soft', item: 'memlock', value: 'unlimited' }
-
+ 
 - name: Comment out the root domain limit in limits.conf
   replace:
     path: "/etc/security/limits.conf"
     regexp: "{{ item.original }}"
     replace: "{{ item.change }}"
+    backup: yes
   with_items:
     - { original: 'root soft nofile 65535', change: '#root soft nofile 65535' }
     - { original: 'root hard nofile 65535', change: '#root hard nofile 65535' }
 
 - name: Comment out the root domain limit in 20-nproc.conf
   replace:
-    path: "20-nproc.conf"
+    path: "/etc/security/limits.d/20-nproc.conf"
     regexp: "{{ item.original }}"
     replace: "{{ item.change }}"
+    backup: yes
   with_items:
-    - { original: '*          soft    nproc     4096', change: '#*          soft    nproc     4096' }
+    - { original: '\*          soft    nproc     4096', change: '#*          soft    nproc     4096' }
     - { original: 'root       soft    nproc     unlimited', change: '#root       soft    nproc     unlimited' }
 
 - name: Disable file system atime,barrier for root directory
@@ -82,7 +85,7 @@
     path: /
     src: "{{ ansible_cmdline.root }}"
     fstype: ext4
-    opts: defaults,noatime,nobarrier
+    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
     state: remounted
 
 - name: Disable file system atime,barrier for data directory
@@ -90,7 +93,7 @@
     path: "{{ install_dir }}"
     src: "{{ fstab_src }}"
     fstype: xfs
-    opts: defaults,noatime,nobarrier
+    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
     state: mounted
     backup: yes
   when: whether_remount_data_disk
@@ -100,6 +103,6 @@
     path: "{{ install_dir }}"
     src: "{{ fstab_src }}"
     fstype: xfs
-    opts: defaults,noatime,nobarrier
+    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
     state: remounted
   when: whether_remount_data_disk

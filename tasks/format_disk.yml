@@ -70,7 +70,7 @@
     path: "{{ install_dir }}"
     src: "{{ fstab_src }}"
     fstype: xfs
-    opts: defaults,noatime,nobarrier
+    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
     dump: 0
     passno: 0
     state: mounted

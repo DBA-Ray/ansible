@@ -54,8 +54,8 @@
   shell: "yum makecache fast"
   when: is_ali_yum_source
 
-- name: Cleaning up unfinished transaction
-  shell: "yum-complete-transaction --cleanup-only;yum history redo last"
+#- name: Cleaning up unfinished transaction
+#  shell: "yum-complete-transaction --cleanup-only;yum history redo last"
 
 - name: Install base packages
   yum:
