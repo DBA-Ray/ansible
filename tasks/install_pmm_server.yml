@@ -37,16 +37,16 @@
     name: docker
     state: stopped
 
-- name: Copy docker directory to installdir
-  copy: src=/var/lib/docker dest={{ install_dir }} remote_src=yes
+# - name: Copy docker directory to installdir
+#   copy: src=/var/lib/docker dest={{ install_dir }} remote_src=yes
 
-- name: Config Docker Root Dir
-  template:
-    dest: /etc/docker/daemon.json
-    src: daemon.json.j2
-    owner: root
-    group: root
-    mode: '0644'
+# - name: Config Docker Root Dir
+#   template:
+#     dest: /etc/docker/daemon.json
+#     src: daemon.json.j2
+#     owner: root
+#     group: root
+#     mode: '0644'
 
 - name: Start docker server
   systemd:

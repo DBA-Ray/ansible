@@ -1,13 +1,13 @@
 ---
-- hosts: mgr_dev1:slave_monitor_dev1
+- hosts: mgr1_dev1:mgr2_dev1
   gather_facts: True
   remote_user: root
   vars:
-    install_pmm_server: False # Whether to deploy pmm and send logs scripts via shell
-    docker_re_install: False # Whether to re_install docker
-    install_percona_tools: False # Whether to install percona tools
-    config_mysql: True
-    config_proxysql: False
+    install_pmm_server: false # Whether to deploy pmm and send logs scripts via shell
+    docker_re_install: false # Whether to re_install docker
+    install_percona_tools: false # Whether to install percona tools
+    config_mysql: true
+    config_proxysql: false
     config_mongoreplset: False
     config_mongocluster: False
     config_mongocluster_pro: False

@@ -1,13 +1,13 @@
 ---
-- hosts: all
+- hosts: slave1_dev1
   gather_facts: true
   remote_user: root
   # # become: yes
   # # become_user: root
   # become_method: su
   vars:
-    is_initial_hosts: True
-    is_format_disk: false
+    is_initial_hosts: false
+    is_format_disk: true
     is_system_check: false
   roles:
     - dba_ray.ansible

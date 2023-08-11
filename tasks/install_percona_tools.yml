@@ -14,8 +14,8 @@
     name: pmm-client.x86_64
     state: absent
 
-- name: Cleaning up unfinished transaction
-  shell: "yum-complete-transaction --cleanup-only;yum history redo last"
+# - name: Cleaning up unfinished transaction
+#   shell: "yum-complete-transaction --cleanup-only;yum history redo last"
 
 - name: Install the percona tools
   yum:

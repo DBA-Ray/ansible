@@ -8,18 +8,18 @@ install_dir: /data
 package_dir: "{{ install_dir }}/package"
 #packages info
 mysql_version: mysql-8.0.33-el7-x86_64
-proxysql_version: '2.3.2'
+proxysql_version: '2.5.2'
 mysql_package_url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_version }}.tar.gz"
 proxysql_package_url: "https://github.com/sysown/proxysql/releases/download/v{{ proxysql_version }}/proxysql-{{ proxysql_version }}-1-centos7.x86_64.rpm"
 #disk info
-whether_size_up_2T: true
+whether_size_up_2T: false
 whether_remount_data_disk: true
 fdisk_src: /dev/vdb
 fstab_src: "{{ fdisk_src }}1"
 #awx info
 whether_uninstall: False
 #pmm info
-pmm_hostname: 10.56.7.108
+pmm_hostname: 192.168.0.60
 mysql_port: 3377
 pmm_port: 443
 #mysql info
