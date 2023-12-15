@@ -21,6 +21,7 @@ packages:
   - zbackup
   - sysstat
   - python3-pip
+  - lsof
 
 vars_files:
   - secrets.yml
