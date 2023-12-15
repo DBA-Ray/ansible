@@ -33,6 +33,17 @@
 #      (?i)): "w"
 #    echo: yes
 
+- name: Unmount file path for data directory
+  mount:
+    path: "{{ install_dir }}"
+    src: "{{ fstab_src }}"
+    fstype: xfs
+    #opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
+    opts: defaults,noatime,nobarrier,nodiratime
+    dump: 0
+    passno: 0
+    state: absent
+
 - name: Rendering format_disk.sh
   template:
     src: format_disk.sh.j2
@@ -59,18 +70,20 @@
 # - name: Format the new disk partition
 #   shell: "mkfs.xfs -f {{ fstab_src }}"
 
-- name: Format the new disk partition
-  filesystem:
-    fstype: xfs
-    dev: "{{ fstab_src }}"
-    force: yes
+#- name: Format the new disk partition
+#  filesystem:
+#    fstype: xfs
+#    dev: "{{ fstab_src }}"
+#    force: yes
+#不需要此步骤，Create the new disk partition步骤自动分区为xfs
 
 - name: Mount file path for data directory
   mount:
     path: "{{ install_dir }}"
     src: "{{ fstab_src }}"
     fstype: xfs
-    opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
+    #opts: defaults,noatime,nobarrier,nodiratime,nodelalloc
+    opts: defaults,noatime,nobarrier,nodiratime
     dump: 0
     passno: 0
     state: mounted

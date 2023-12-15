@@ -16,51 +16,11 @@
     state: absent
   when: docker_re_install
 
-- name: Install docker
-  yum:
-    name: docker
-    state: latest
+- name: Install and start pmm server
+  shell: "curl -fsSL https://www.percona.com/get/pmm | /bin/bash"
 
 - name: Enable docker server
   systemd:
     name: docker
     state: started
     enabled: yes
-
-- name: Start docker server
-  systemd:
-    name: docker
-    state: started
-
-- name: Stop docker server
-  systemd:
-    name: docker
-    state: stopped
-
-# - name: Copy docker directory to installdir
-#   copy: src=/var/lib/docker dest={{ install_dir }} remote_src=yes
-
-# - name: Config Docker Root Dir
-#   template:
-#     dest: /etc/docker/daemon.json
-#     src: daemon.json.j2
-#     owner: root
-#     group: root
-#     mode: '0644'
-
-- name: Start docker server
-  systemd:
-    name: docker
-    state: started
-
-- name: Docker pull image
-  shell: "docker pull percona/pmm-server:2"
-
-- name: Docker create container
-  shell: "docker create -v /srv --name pmm-data percona/pmm-server:2 /bin/true"
-
-- name: Dcoer run container
-  shell: "docker run --detach --restart always \
---publish 80:80 --publish {{ pmm_port }}:443 \
---volumes-from pmm-data --name pmm-server \
-percona/pmm-server:2"
