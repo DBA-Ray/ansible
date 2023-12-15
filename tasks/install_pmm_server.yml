@@ -12,15 +12,42 @@
 
 - name: Remove docker directory
   file:
-    path: /var/lib/docker
+    path: "{{ item }}"
     state: absent
+    remote_src: 'yes'   
+  with_items:
+    - /var/lib/docker
+    - "{{ install_dir }}/docker"
   when: docker_re_install
 
 - name: Install and start pmm server
   shell: "curl -fsSL https://www.percona.com/get/pmm | /bin/bash"
+  
+- name: Stop docker server for modify docker root dir
+  systemd:
+    name: docker
+    state: stopped
+    
+- name: Copy the original docker root dir
+  copy:
+    src: /var/lib/docker
+    dest: "{{ install_dir }}"
+    force: yes
+    
+- name: Create a symbolic link for "/var/lib/docker"
+  file:
+    src: "{{ install_dir }}/docker"
+    dest: /var/lib/docker
+    state: link
+
+- name: Start docker server
+  systemd:
+    name: docker
+    state: started
 
 - name: Enable docker server
   systemd:
     name: docker
     state: started
     enabled: yes
+  
