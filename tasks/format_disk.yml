@@ -75,7 +75,7 @@
 #    fstype: xfs
 #    dev: "{{ fstab_src }}"
 #    force: yes
-#不需要此步骤，Create the new disk partition步骤自动分区为xfs
+#No need for this step, the Create the new disk partition step automatically partitions to xfs
 
 - name: Mount file path for data directory
   mount:
