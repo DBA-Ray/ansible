@@ -70,12 +70,13 @@
 # - name: Format the new disk partition
 #   shell: "mkfs.xfs -f {{ fstab_src }}"
 
-#- name: Format the new disk partition
-#  filesystem:
-#    fstype: xfs
-#    dev: "{{ fstab_src }}"
-#    force: yes
-#No need for this step, the Create the new disk partition step automatically partitions to xfs
+- name: Format the new disk partition
+  filesystem:
+    fstype: xfs
+    dev: "{{ fstab_src }}"
+    force: yes
+  when: not whether_size_up_2T
+#Using GPT does not require this step, the step of creating a new disk partition will automatically partition to xfs
 
 - name: Mount file path for data directory
   mount:
